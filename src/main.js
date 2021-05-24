@@ -5,9 +5,11 @@ import App from './App.vue'
 // means: I will use a router and it is in ./router directory. 
 // Also I need to create my vue instance with this router. look at here : ROUTER SEND
 import { router } from "./router"
+import { store } from "./store/store"
 
 new Vue({
     el: '#app',
     render: h => h(App),
-    router // ROUTER SEND
+    router, // ROUTER SEND
+    store
 })
