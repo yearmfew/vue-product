@@ -8,6 +8,7 @@
           <div class="form-group">
             <label>Ürün Adı</label>
             <input
+              v-model="product.title"
               type="text"
               class="form-control"
               placeholder="Ürün adını giriniz.."
@@ -16,7 +17,8 @@
           <div class="form-group">
             <label>Adet</label>
             <input
-              type="text"
+              v-model="product.count"
+              type="number"
               class="form-control"
               placeholder="Ürün adetini giriniz.."
             />
@@ -24,7 +26,8 @@
           <div class="form-group">
             <label>Fiyat</label>
             <input
-              type="text"
+              v-model="product.price"
+              type="number"
               class="form-control"
               placeholder="Ürün fiyatı giriniz.."
             />
@@ -32,6 +35,7 @@
           <div class="form-group">
             <label>Açıklama</label>
             <textarea
+              v-model="product.description"
               cols="30"
               rows="5"
               placeholder="Ürüne ait bir açıklama giriniz..."
@@ -39,14 +43,30 @@
             ></textarea>
           </div>
           <hr />
-          <button class="btn btn-primary">Kaydet</button>
+          <button class="btn btn-primary" @click="saveProduct">Kaydet</button>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      product: {
+        title: "",
+        count: null,
+        price: null,
+        description: "",
+      },
+    };
+  },
+  methods: {
+    saveProduct() {
+      this.$store.dispatch("saveProduct", this.product);
+    },
+  },
+};
 </script>
 <style scoped>
 </style>
