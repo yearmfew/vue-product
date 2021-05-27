@@ -43,7 +43,13 @@
             ></textarea>
           </div>
           <hr />
-          <button class="btn btn-primary" @click="saveProduct">Kaydet</button>
+          <button
+            class="btn btn-primary"
+            :disabled="saveEnabled"
+            @click="saveProduct"
+          >
+            Kaydet
+          </button>
         </div>
       </div>
     </div>
@@ -58,13 +64,50 @@ export default {
         count: null,
         price: null,
         description: "",
+        saveButtonClicked: false,
       },
     };
   },
   methods: {
     saveProduct() {
+      this.saveButtonClicked = true;
       this.$store.dispatch("saveProduct", this.product);
     },
+  },
+  computed: {
+    // Controls if form elements are written. Then makes disabled false.
+    saveEnabled() {
+      let result = true;
+      if (
+        this.product.title.length > 0 &&
+        this.product.count > 0 &&
+        this.product.price > 0 &&
+        this.product.description.length > 0
+      ) {
+        result = false;
+      }
+      return result;
+    },
+  },
+  // prevent to get out pages without saving. Warns the user about unsaved changes.
+  // This is a default computed. There are three parameters. We are using now next.
+  // next decides if user can go to the next page according to its parameter.
+  beforeRouteLeave(to, from, next) {
+    if (
+      (this.product.title.length > 0 ||
+        this.product.count > 0 ||
+        this.product.price > 0 ||
+        this.product.description.length > 0) &&
+      !this.saveButtonClicked
+    ) {
+      if (confirm("There are unsaved changes. Do You want to get out...")) {
+        next();
+      } else {
+        next(false);
+      }
+    } else {
+      next();
+    }
   },
 };
 </script>

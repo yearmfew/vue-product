@@ -1,4 +1,6 @@
 import Vue from "vue"
+import { router } from "../../router";
+
 const state = {
     products: [],
 }
@@ -28,7 +30,10 @@ const mutations = {
 const actions = {
     initApp({ commit }) {
         // Vue resource ...
-
+        Vue.http.get("https://vue-product-b733d-default-rtdb.europe-west1.firebasedatabase.app/products.json")
+            .then(response => {
+                console.log(response);
+            })
     },
     // send data to database
     saveProduct({ dispatch, commit, state }, product) {
@@ -46,6 +51,7 @@ const actions = {
                     count: product.count
                 }
                 dispatch("setTradeResult", tradeResult)
+                router.replace("/")
             })
 
     },

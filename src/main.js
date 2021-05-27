@@ -11,6 +11,12 @@ import VueResource from "vue-resource"
 
 Vue.use(VueResource);
 
+// changes the format of the value to given units. 
+// usage : {value | currency} You can have a look to the footer vue to see how it is implemented. 
+Vue.filter("currency", (value) => {
+    return parseFloat(value).toLocaleString(undefined, { minimumFractionDigits: 2 }) + "€"
+})
+
 new Vue({
     el: '#app',
     render: h => h(App),
