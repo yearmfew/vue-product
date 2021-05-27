@@ -1,5 +1,11 @@
 <template>
   <div class="container">
+    <div class="loading" :style="isLoading">
+      <div class="lds-ripple">
+        <div></div>
+        <div></div>
+      </div>
+    </div>
     <div class="row">
       <div class="col-6 offset-3 pt-3 card mt-5 shadow">
         <div class="card-body">
@@ -64,8 +70,8 @@ export default {
         count: null,
         price: null,
         description: "",
-        saveButtonClicked: false,
       },
+      saveButtonClicked: false,
     };
   },
   methods: {
@@ -87,6 +93,14 @@ export default {
         result = false;
       }
       return result;
+    },
+
+    isLoading() {
+      if (this.saveButtonClicked) {
+        return { display: "block" };
+      } else {
+        return { display: "none" };
+      }
     },
   },
   // prevent to get out pages without saving. Warns the user about unsaved changes.
