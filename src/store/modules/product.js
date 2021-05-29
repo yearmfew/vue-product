@@ -11,7 +11,13 @@ const getters = {
         return state.products;
     },
     getProduct(state) {
+        // Filter usage
+        // We are using the sendet key value by writing return key. 
+        // filter go over the all elements in array.  
 
+        return key => state.products.filter(element => {
+            return element.key == key;
+        })
     }
 }
 
@@ -29,10 +35,15 @@ const mutations = {
 // send it to the state with the help of mutations.
 const actions = {
     initApp({ commit }) {
-        // Vue resource ...
+        // We are senfing data[key] to mutation. It stores products. You can see it by console.loging
         Vue.http.get("https://vue-product-b733d-default-rtdb.europe-west1.firebasedatabase.app/products.json")
             .then(response => {
-                console.log(response);
+                let data = response.body;
+                for (let key in data) {
+                    data[key].key = key;
+                    commit("updateProductList",
+                        data[key]);
+                }
             })
     },
     // send data to database
@@ -55,8 +66,35 @@ const actions = {
             })
 
     },
-    sellProduct({ commit }, payload) {
+    sellProduct({ state, commit, dispatch }, payload) {
         // Vue resource ...
+        // pass by reference
+        // pass by value
+
+        // pass by reference, we are taking the adress of the object not creating another object with a new reference.
+        let product = state.products.filter(element => {
+            return element.key == payload.key;
+        })
+
+        if (product) {
+            let totalCount = product[0].count - payload.count;
+
+            // patch: finds what we want in database and make changes on it.
+            // we are going to wanted product by adding the key of it at the end of the link
+            // then we are making changes on it by sending an object to the link with the wanted property
+            Vue.http.patch("https://vue-product-b733d-default-rtdb.europe-west1.firebasedatabase.app/products/" + payload.key + ".json", { count: totalCount })
+                .then(response => {
+                    product[0].count = totalCount;
+                    let tradeResult = {
+                        purchase: 0,
+                        sale: product[0].price,
+                        count: payload.count
+                    }
+                    dispatch("setTradeResult", tradeResult)
+                    router.replace("/")
+
+                })
+        }
 
     }
 }
