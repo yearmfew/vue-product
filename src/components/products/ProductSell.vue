@@ -55,7 +55,9 @@
             />
           </div>
           <hr />
-          <button @click="save" class="btn btn-primary">Kaydet</button>
+          <button @click="save" :disabled="saveEnabled" class="btn btn-primary">
+            Kaydet
+          </button>
         </div>
       </div>
     </div>
@@ -73,6 +75,13 @@ export default {
   },
   computed: {
     ...mapGetters(["getProducts"]),
+    saveEnabled() {
+      let result = true;
+      if (this.selectedProduct !== 0 && this.product_count > 0) {
+        result = false;
+      }
+      return result;
+    },
   },
   methods: {
     productSelected() {
@@ -84,6 +93,19 @@ export default {
         count: this.product_count,
       };
       this.$store.dispatch("sellProduct", product);
+    },
+    beforeRouteLeave(next) {
+      if (this.selectedProduct !== null || this.product_count > 0) {
+        if (confirm("There are unsaved changes. Do You want to get out...")) {
+          next();
+          console.log("ok");
+        } else {
+          next(false);
+          console.log("false");
+        }
+      } else {
+        next();
+      }
     },
   },
 };
